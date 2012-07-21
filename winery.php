@@ -72,13 +72,34 @@ id="search" />
 	$minDollar = $_POST['minDollar'];
 	$maxDollar = $_POST['maxDollar'];
 	$counter = 0;
+	?>
+	<span id="dieerrors">
+	<?php
+
+	//php validation before entering the database
+	//this makes sure that all required fields are filled in.
+	if($winename != '' && $wineryname != '' && $region != '' && 
+$grape != '' && $YearMin != '' && $YearMax != '' && $minstock != '' && 
+$minordered != '' && $minDollar != '' && $maxDollar != '')
+	{
+
+	//individual validation for each variable
+	if($YearMin < '1000' || $YearMin > '2030')){die("Minimum year 
+must be between 1000 and 2030.");}
+
+        $query = "select wine, grape, year, winery, region, (cost), 
+(totalbottles), (totalstock sold), (total revenue)
+from wine";
+
+	?>
+	</span>
+	<?php
 	
 	//enter the database and query it
-	
-	//query names
-	$query = "select wine, grape, year, winery, region, 
-(cost), (totalbottles), (totalstock sold), (total revenue) 
-from wine";
+	$dbc = mysql_connect("SERVER", "USER", "PASSWORD") or 
+die("can't connect to server");
+	mysql_select_db("winestore") or die("can't connect to 
+database");
 	
 	//display the table
 	
@@ -90,7 +111,26 @@ and written
 the counter is still at 0.
 	if (counter == 0){print "No records match your 
 search criteria.";}
-	
+	else{
+		print "<table><th>Wine 
+Name</th><th>Grape</th><th>Year</th><th>Winery</th><th>Region</th><th>Cost</th><th>Total 
+bottles</th><th>Total stock sold</th><th>Total Revenue</th>";
+
+		while($row = mysql_fetch_array($result))
+		{
+			//verify names
+			print "<tr><td>" .$row['Wine_Name']."</td>
+			<td>".$row['Grape']."</td>
+			<td>".$row['Year']."</td>
+			<td>".$row['Winery']."</td>
+			<td>".$row['Region']."</td>
+			<td>".$row['Cost']."</td>
+			<td>".$row['TotalBottles']."</td>
+			<td>".$row['TotalStockSold']."</td>
+			<td>".$row['TotalRevenue']."</td>
+			</tr>";
+		}
+		print "</table>";
 	
 	?>
 	
