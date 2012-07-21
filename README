@@ -1,0 +1,6 @@
+Instructions missed: 3.3 Could not find the configuration 
+file .git/config file???
+
+Replace the line url = 
+https://github.com/s3236863/connect.git with
+url = git@github.com:s3236863/connect.git
