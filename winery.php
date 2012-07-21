@@ -3,6 +3,7 @@
 <html>
 	<head>
 		<title>Winery Database</title>
+		<!--Nathan Dalby s3236863-->
 	</head>
 
 	<body>
@@ -41,6 +42,7 @@ id="wineryname" /></td></tr>
 		<option></option>
 	 </select>
 	</td></tr>
+	<!--Nathan Dalby s3236863-->
 	 
 	<tr><td> Minimum number of wines in stock, per wine: </td><td><input 
 type="text" name="minstock" id="minstock" /></td></tr>
@@ -60,7 +62,7 @@ id="search" />
 	</form>
 	
 	<?php
-	
+	//Nathan Dalby s3236863
 	$winename = $_POST['winename'];
 	$wineryname = $_POST['wineryname'];
 	$region = $_POST['region'];
@@ -83,7 +85,7 @@ $grape != '' && $YearMin != '' && $YearMax != '' && $minstock != '' &&
 $minordered != '' && $minDollar != '' && $maxDollar != '')
 	{
 
-	//individual validation for each variable
+	//individual validation for each variable s3236863
 	if($YearMin < '1000' || $YearMin > '2030')){die("Minimum year 
 must be between 1000 and 2030.");}
 
@@ -131,6 +133,7 @@ bottles</th><th>Total stock sold</th><th>Total Revenue</th>";
 			</tr>";
 		}
 		print "</table>";
+//Nathan Dalby s3236863
 	
 	?>
 	
