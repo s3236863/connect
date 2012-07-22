@@ -4,6 +4,7 @@
 	<head>
 		<title>Winery Database</title>
 		<!--Nathan Dalby s3236863-->
+		<link type="text/css" rel="stylesheet" href="style.css" />
 	</head>
 
 	<body>
@@ -11,7 +12,8 @@
 	
 	<h1>Search wines and wineries</h1>
 	
-	<form action="winery.php" method="post" onsubmit="return checkWine()" >
+	<form action="winery.php" method="get" onsubmit="return 
+checkWine()" >
 	<table id="winetable">
 	<tr><td>Wine Name: </td><td><input type="text" name="winename" 
 id="winename" /></td></tr>
@@ -63,16 +65,16 @@ id="search" />
 	
 	<?php
 	//Nathan Dalby s3236863
-	$winename = $_POST['winename'];
-	$wineryname = $_POST['wineryname'];
-	$region = $_POST['region'];
-	$grape = $_POST['grape'];
-	$YearMin = $_POST['yearMin'];
-	$YearMax = $_POST['yearMax'];
-	$minstock = $_POST['minstock'];
-	$minordered = $_POST['minordered'];
-	$minDollar = $_POST['minDollar'];
-	$maxDollar = $_POST['maxDollar'];
+	$winename = $_GET['winename'];
+	$wineryname = $_GET['wineryname'];
+	$region = $_GET['region'];
+	$grape = $_GET['grape'];
+	$YearMin = $_GET['yearMin'];
+	$YearMax = $_GET['yearMax'];
+	$minstock = $_GET['minstock'];
+	$minordered = $_GET['minordered'];
+	$minDollar = $_GET['minDollar'];
+	$maxDollar = $_GET['maxDollar'];
 	$counter = 0;
 	?>
 	<span id="dieerrors">
@@ -88,10 +90,16 @@ $minordered != '' && $minDollar != '' && $maxDollar != '')
 	//individual validation for each variable s3236863
 	if($YearMin < '1000' || $YearMin > '2030')){die("Minimum year 
 must be between 1000 and 2030.");}
-
+/*
         $query = "select wine, grape, year, winery, region, (cost), 
 (totalbottles), (totalstock sold), (total revenue)
 from wine";
+*/
+
+	$query = "select wine_name, variety, winery_name, region_name, 
+	cost from wine, grape_variety, winery, region, inventory where 
+	winery.region_id = region.region_id and wine.winery_id = winery.winery_id 
+	and wine.wine_id = inventory.wine_id";
 
 	?>
 	</span>
@@ -121,12 +129,12 @@ bottles</th><th>Total stock sold</th><th>Total Revenue</th>";
 		while($row = mysql_fetch_array($result))
 		{
 			//verify names
-			print "<tr><td>" .$row['Wine_Name']."</td>
-			<td>".$row['Grape']."</td>
-			<td>".$row['Year']."</td>
-			<td>".$row['Winery']."</td>
-			<td>".$row['Region']."</td>
-			<td>".$row['Cost']."</td>
+			print "<tr><td>" .$row['wine_name']."</td>
+			<td>".$row['variety']."</td>
+			<td>".$row['year']."</td>
+			<td>".$row['winery_name']."</td>
+			<td>".$row['region_name']."</td>
+			<td>".$row['cost']."</td>
 			<td>".$row['TotalBottles']."</td>
 			<td>".$row['TotalStockSold']."</td>
 			<td>".$row['TotalRevenue']."</td>
@@ -134,6 +142,7 @@ bottles</th><th>Total stock sold</th><th>Total Revenue</th>";
 		}
 		print "</table>";
 //Nathan Dalby s3236863
+	}
 	
 	?>
 	
