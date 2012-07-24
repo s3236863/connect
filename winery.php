@@ -9,10 +9,15 @@
 
 	<body>
 	<div id="wrapper">
-	
+	<?php
+			$dbc = mysql_connect("localhost", "root", "") or 
+		print("can't connect to server");
+		mysql_select_db("winestore") or print("can't connect to 
+database");
+	?>
 	<h1>Search wines and wineries</h1>
 	
-	<form action="winery.php" method="get" onsubmit="return 
+	<form action="winery2.php" method="get" onsubmit="return 
 checkWine()" >
 	<table id="winetable">
 	<tr><td>Wine Name: </td><td><input type="text" name="winename" 
@@ -22,8 +27,16 @@ id="wineryname" /></td></tr>
 	<tr><td>Region: </td><td>
 	<select>
 	<!--dynamically added select options-->
-		<option>Nothing</option>	
-	</select>
+		<option></option>
+		<?php	
+//print "<option>" .$row['wine_name']."</option>";
+	$regionquery = mysql_query("select region_name from region");
+	while($row = mysql_fetch_array($regionquery))
+	{
+		print "<option>".$row['region_name']."</option>";
+	}
+		?>
+		</select>
 		<!--
 		<?php
 		/*
@@ -44,6 +57,7 @@ id="wineryname" /></td></tr>
 	
 	?>
 	-->
+	</select>
 	</td></tr>
 	
 	<tr><td>Grape variety:</td><td>
@@ -141,6 +155,7 @@ from wine";
 		die("can't connect to server");
 		mysql_select_db("winestore") or die("can't connect to 
 database");
+		$result = mysql_query("$query");
 	
 	//display the table
 	
