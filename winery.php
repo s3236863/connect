@@ -17,7 +17,7 @@ database");
 	?>
 	<h1>Search wines and wineries</h1>
 	
-	<form action="winery2.php" method="get" onsubmit="return 
+	<form action="winery.php" method="get" onsubmit="return 
 checkWine()" >
 	<table id="winetable">
 	<tr><td>Wine Name: </td><td><input type="text" name="winename" 
@@ -25,57 +25,56 @@ id="winename" /></td></tr>
 	<tr><td>Winery Name: </td><td><input type="text" name="wineryname" 
 id="wineryname" /></td></tr>
 	<tr><td>Region: </td><td>
-	<select>
+	<select name="region" id = "region">
 	<!--dynamically added select options-->
 		<option></option>
 		<?php	
-//print "<option>" .$row['wine_name']."</option>";
-	$regionquery = mysql_query("select region_name from region");
+	$regionquery = mysql_query("select region_name from region group by region_name");
 	while($row = mysql_fetch_array($regionquery))
 	{
 		print "<option>".$row['region_name']."</option>";
 	}
 		?>
-		</select>
-		<!--
-		<?php
-		/*
-	$regionsql = "select region_name from region";
-	$result = mysql_query($regionsql) or die(mysql_error());
-	
-	if(mysql_num_rows($result)){
-	while($row = mysql_fetch_row($result))
-	{
-	
-	print("<option value=\"$row[0]\">$row[0]</option>");
-	}
-	}
-	else{
-	print("<option value\"\">There are no regions</option>");
-	}
-	*/
-	
-	?>
-	-->
 	</select>
 	</td></tr>
 	
 	<tr><td>Grape variety:</td><td>
-	<select>
+	<select name="grape" id="grape">
 	<!--dynamically added select options-->
 		<option></option>
+		<?php	
+	$grapequery = mysql_query("select variety from grape_variety group by variety");
+	while($row = mysql_fetch_array($grapequery))
+	{
+		print "<option>".$row['variety']."</option>";
+	}
+		?>
 	</select>
 	</td></tr>
 	
 	<tr><td>Year Range:</td><td>
-	<select>
+	<select name="YearMin" id="YearMin">
 	<!--dynamically added select options-->
 		<option></option>
+		<?php	
+	$year1query = mysql_query("select year from wine group by year");
+	while($row = mysql_fetch_array($year1query))
+	{
+		print "<option>".$row['year']."</option>";
+	}
+		?>
 	</select>
 	 to 
-	 <select>
+	 <select name="YearMax" id="YearMax">
 	 <!--dynamically added select options-->
 		<option></option>
+				<?php	
+	$year2query = mysql_query("select year from wine group by year");
+	while($row = mysql_fetch_array($year2query))
+	{
+		print "<option>".$row['year']."</option>";
+	}
+		?>
 	 </select>
 	</td></tr>
 	<!--Nathan Dalby s3236863-->
@@ -105,16 +104,27 @@ id="search" />
 	$wineryname = $_GET['wineryname'];
 	$region = $_GET['region'];
 	$grape = $_GET['grape'];
-	$YearMin = $_GET['yearMin'];
-	$YearMax = $_GET['yearMax'];
+	$YearMin = $_GET['YearMin'];
+	$YearMax = $_GET['YearMax'];
 	$minstock = $_GET['minstock'];
 	$minordered = $_GET['minordered'];
 	$minDollar = $_GET['minDollar'];
 	$maxDollar = $_GET['maxDollar'];
 	$counter = 0;
-	?>
-	<span id="dieerrors">
-	<?php
+	/* checks
+	print $winename;
+	print $wineryname;
+	print $region;
+	print $grape;
+	print $YearMin;
+	print $YearMax;
+	print $minstock;
+	print $minordered;
+	print $minDollar;
+	print $maxDollar;
+	print $error;
+	*/
+	print "<span id='dieerrors'>";
 
 	//php validation before entering the database
 	//this makes sure that all required fields are filled in.
@@ -132,23 +142,29 @@ $minordered != '' && $minDollar != '' && $maxDollar != '')
 	$error = "Minimum year must be between 1000 and 2030.";
 	print $error;
 	}
+	else if($YearMax < '1000' || $YearMax > '2030'){
+	$error = "Maximum year must be between 1000 and 2030.";
+	print $error;
+	}
+	else if($YearMax < $YearMin){
+	$error = "Maximum year is smaller than minimum year!!!";
+	print $error;
+	}
+	else if($maxDollar < $minDollar){
+	$error = "Maximum dollar range is smaller than minimum dollar range!!!";
+	print $error;
+	}
 	
 	print "</td></table>";
 	
-/*
-        $query = "select wine, grape, year, winery, region, (cost), 
-(totalbottles), (totalstock sold), (total revenue)
-from wine";
-*/
 
 //this is the (very long) sql command as a variable name
 //still needed to be added to it will be querying each of the variables against it.
 	$query = "select wine_name, variety, year,  winery_name, region_name, cost, on_hand, qty, sum(cost*qty) as Total_Revenue from wine, grape_variety, winery, region, inventory, wine_variety, items where winery.region_id = region.region_id and wine.winery_id = winery.winery_id and wine.wine_id = inventory.wine_id and wine_variety.variety_id = grape_variety.variety_id and wine_variety.wine_id = wine.wine_id and items.wine_id = wine.wine_id group by wine.wine_id";
 
-	?>
-	</span>
-	<?php
-	if ($error = '')
+	print "</span>";
+
+	if ($error == '')
 	{
 	//enter the database and query it
 		$dbc = mysql_connect("localhost", "root", "") or 
