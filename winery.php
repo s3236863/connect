@@ -82,13 +82,15 @@ id="search" />
 
 	//php validation before entering the database
 	//this makes sure that all required fields are filled in.
+/*no fields are required
 	if($winename != '' && $wineryname != '' && $region != '' && 
 $grape != '' && $YearMin != '' && $YearMax != '' && $minstock != '' && 
 $minordered != '' && $minDollar != '' && $maxDollar != '')
 	{
+	*/
 
 	//individual validation for each variable s3236863
-	if($YearMin < '1000' || $YearMin > '2030')){die("Minimum year 
+	if($YearMin < '1000' || $YearMin > '2030'){die("Minimum year 
 must be between 1000 and 2030.");}
 /*
         $query = "select wine, grape, year, winery, region, (cost), 
@@ -113,12 +115,11 @@ database");
 	
 	//display the table
 	
-	//adds one to the counter each time a row is found 
-and written
-	counter = counter + 1;
+	//adds one to the counter each time a row is found and written
+	$counter = $counter + 1;
 	
 	//after the query is executed, return an error if 
-the counter is still at 0.
+	//the counter is still at 0.
 	if (counter == 0){print "No records match your 
 search criteria.";}
 	else{
@@ -139,10 +140,11 @@ bottles</th><th>Total stock sold</th><th>Total Revenue</th>";
 			<td>".$row['TotalStockSold']."</td>
 			<td>".$row['TotalRevenue']."</td>
 			</tr>";
-		}
+		}//while
 		print "</table>";
 //Nathan Dalby s3236863
-	}
+	}//else
+//	}//if statement if there are required statements
 	
 	?>
 	
