@@ -174,16 +174,12 @@ database");
 		$result = mysql_query("$query");
 	
 	//display the table
-	
-	//adds one to the counter each time a row is found and written
-		$counter = $counter + 1;
-	
 	//after the query is executed, return an error if 
 	//the counter is still at 0.
-		if (counter == 0){print "No records match your 
-search criteria.";}
-		else{
-			print "<table><th>Wine 
+//		if (counter == 0){print "No records match your 
+//search criteria.";}
+//		else{
+			print "<table id='VT' ><th>Wine 
 Name</th><th>Grape</th><th>Year</th><th>Winery</th><th>Region</th><th>Cost</th><th>Total 
 bottles</th><th>Total stock sold</th><th>Total Revenue</th>";
 
@@ -196,14 +192,19 @@ bottles</th><th>Total stock sold</th><th>Total Revenue</th>";
 				<td>".$row['winery_name']."</td>
 				<td>".$row['region_name']."</td>
 				<td>".$row['cost']."</td>
-				<td>".$row['TotalBottles']."</td>
-				<td>".$row['TotalStockSold']."</td>
-				<td>".$row['TotalRevenue']."</td>
+				<td>".$row['on_hand']."</td>
+				<td>".$row['qty']."</td>
+				<td>".$row['Total_Revenue']."</td>
 				</tr>";
+			//adds one to the counter each time a row is found and written
+			$counter = $counter + 1;
 			}//while
 			print "</table>";
+			print "Total returned: $counter";
 //Nathan Dalby s3236863
-		}//else
+		//}//else
+		if($counter == 0)
+		{print "No records match your search criteria.";}
 		} //error if
 //	}//if statement if there are required statements
 	
