@@ -122,31 +122,35 @@ $grape != '' && $YearMin != '' && $YearMax != '' && $minstock != '' &&
 $minordered != '' && $minDollar != '' && $maxDollar != '')
 	{
 
-	print "<table id='errortable'>";
-	print "<td>";
-	//individual validation for each variable s3236863
-	if($YearMin < '1000' || $YearMin > '2030'){
-	$error = "Minimum year must be between 1000 and 2030.";
-	print $error;
-	}
-	else if($YearMax < '1000' || $YearMax > '2030'){
-	$error = "Maximum year must be between 1000 and 2030.";
-	print $error;
-	}
-	else if($YearMax < $YearMin){
-	$error = "Maximum year is smaller than minimum year!!!";
-	print $error;
-	}
-	else if($maxDollar < $minDollar){
-	$error = "Maximum dollar range is smaller than minimum dollar range!!!";
-	print $error;
-	}
+		print "<table id='errortable'>";
+		print "<td>";
+		//individual validation for each variable s3236863
+		if($YearMin < '1000' || $YearMin > '2030')
+		{
+			$error = "Minimum year must be between 1000 and 2030.";
+			print $error;
+		}
+		else if($YearMax < '1000' || $YearMax > '2030')
+		{
+			$error = "Maximum year must be between 1000 and 2030.";
+			print $error;
+		}
+		else if($YearMax < $YearMin)
+		{
+			$error = "Maximum year is smaller than minimum year!!!";
+			print $error;
+		}
+		else if($maxDollar < $minDollar)
+		{
+			$error = "Maximum dollar range is smaller than minimum dollar range!!!";
+			print $error;
+		}
 	
-	print "</td></table>";
+		print "</td></table>";
+	}
 	
 
 //this is the (very long) sql command as a variable name
-//still needed to be added to it will be querying each of the variables against it.
 	$query = "select wine_name, variety, year,  winery_name, region_name, cost, on_hand, qty, sum(cost*qty) as Total_Revenue from wine, grape_variety, winery, region, inventory, wine_variety, items where winery.region_id = region.region_id and wine.winery_id = winery.winery_id and wine.wine_id = inventory.wine_id and wine_variety.variety_id = grape_variety.variety_id and wine_variety.wine_id = wine.wine_id and items.wine_id = wine.wine_id";
 	
 	if($grape != 'All'){
@@ -183,6 +187,7 @@ $minordered != '' && $minDollar != '' && $maxDollar != '')
 		mysql_select_db("winestore") or die("can't connect to 
 database");
 		$result = mysql_query("$query");
+		//$finalresult = $GET['$result'];
 	
 //Nathan Dalby s3236863
 	}//if statement if there are required statements
