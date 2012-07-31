@@ -5,6 +5,7 @@
 		<title>Winery Database</title>
 		<!--Nathan Dalby s3236863-->
 		<link type="text/css" rel="stylesheet" href="style.css" />
+		<script type="text/javascript" src="wine.js"></script>
 	</head>
 
 	<body>
@@ -68,7 +69,7 @@ id="wineryname" /></td></tr>
 	 <select name="YearMax" id="YearMax">
 	 <!--dynamically added select options-->
 		<option>All</option>
-				<?php	
+		<?php	
 	$year2query = mysql_query("select year from wine group by year");
 	while($row = mysql_fetch_array($year2query))
 	{
@@ -115,39 +116,45 @@ id="search" />
 	print "<span id='dieerrors'>";
 
 	//php validation before entering the database
-	//this makes sure that all required fields are filled in.
-
-	if($winename != '' && $wineryname != '' && $region != '' && 
-$grape != '' && $YearMin != '' && $YearMax != '' && $minstock != '' && 
-$minordered != '' && $minDollar != '' && $maxDollar != '')
-	{
 
 		print "<table id='errortable'>";
 		print "<td>";
 		//individual validation for each variable s3236863
-		if($YearMin < '1000' || $YearMin > '2030')
+		if(($YearMin < '1000' || $YearMin > '2030') && $YearMin != 'All')
 		{
-			$error = "Minimum year must be between 1000 and 2030.";
-			print $error;
+			die("Minimum year must be between 1000 and 2030.");
 		}
-		else if($YearMax < '1000' || $YearMax > '2030')
+		else if(($YearMax < '1000' || $YearMax > '2030') && $YearMin != 'All')
 		{
-			$error = "Maximum year must be between 1000 and 2030.";
-			print $error;
+			die("Maximum year must be between 1000 and 2030.");
 		}
 		else if($YearMax < $YearMin)
 		{
-			$error = "Maximum year is smaller than minimum year!!!";
-			print $error;
+			die("Maximum year is smaller than minimum year!!!");
+		}
+		else if(ctype_digit($minstock) != TRUE)
+		{
+			die("Minimum stock must be a number.");
+		}
+		else if(ctype_digit($minordered) != TRUE)
+		{
+			die("Minimum ordered must be a number.");
+		}
+		else if(ctype_digit($minDollar) != TRUE)
+		{
+			die("Minimum dollar must be a number.");
+		}
+		else if(ctype_digit($maxDollar) != TRUE)
+		{
+			die("Maximum dollar must be a number.");
 		}
 		else if($maxDollar < $minDollar)
 		{
-			$error = "Maximum dollar range is smaller than minimum dollar range!!!";
-			print $error;
+			die("Maximum dollar range is smaller than minimum dollar range!!!");
 		}
 	
 		print "</td></table>";
-	}
+//	}
 	
 
 //this is the (very long) sql command as a variable name
@@ -187,14 +194,15 @@ $minordered != '' && $minDollar != '' && $maxDollar != '')
 		mysql_select_db("winestore") or die("can't connect to 
 database");
 		$result = mysql_query("$query");
-		//$finalresult = $GET['$result'];
-	
 //Nathan Dalby s3236863
 	}//if statement if there are required statements
 	else{
 	die("There is a blank field. Please try again.");
 	}
 	
+	echo '<div id="error">';
+
+	echo "$error</div>";
 	?>
 	
 	</div> <!--wrapper-->
