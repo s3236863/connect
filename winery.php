@@ -10,7 +10,7 @@
 	<body>
 	<div id="wrapper">
 	<?php
-			$dbc = mysql_connect("localhost", "root", "") or 
+			$dbc = mysql_connect("yallara.cs.rmit.edu.au:56586", "winestore", "bmRVQy5E") or 
 		print("can't connect to server");
 		mysql_select_db("winestore") or print("can't connect to 
 database");
@@ -182,7 +182,7 @@ $minordered != '' && $minDollar != '' && $maxDollar != '')
 	if ($error == '')
 	{
 	//enter the database and query it
-		$dbc = mysql_connect("localhost", "root", "") or 
+		$dbc = mysql_connect("yallara.cs.rmit.edu.au:56586", "winestore", "bmRVQy5E") or 
 		die("can't connect to server");
 		mysql_select_db("winestore") or die("can't connect to 
 database");
