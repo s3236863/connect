@@ -17,7 +17,7 @@ database");
 	?>
 	<h1>Search wines and wineries</h1>
 	
-	<form action="winery.php" method="get" onsubmit="return 
+	<form action="wineryresults.php" method="get" onsubmit="return 
 checkWine()" >
 	<table id="winetable">
 	<tr><td>Wine Name: </td><td><input type="text" name="winename" 
@@ -27,7 +27,7 @@ id="wineryname" /></td></tr>
 	<tr><td>Region: </td><td>
 	<select name="region" id = "region">
 	<!--dynamically added select options-->
-		<option></option>
+		<option>All</option>
 		<?php	
 	$regionquery = mysql_query("select region_name from region group by region_name");
 	while($row = mysql_fetch_array($regionquery))
@@ -41,7 +41,7 @@ id="wineryname" /></td></tr>
 	<tr><td>Grape variety:</td><td>
 	<select name="grape" id="grape">
 	<!--dynamically added select options-->
-		<option></option>
+		<option>All</option>
 		<?php	
 	$grapequery = mysql_query("select variety from grape_variety group by variety");
 	while($row = mysql_fetch_array($grapequery))
@@ -55,7 +55,7 @@ id="wineryname" /></td></tr>
 	<tr><td>Year Range:</td><td>
 	<select name="YearMin" id="YearMin">
 	<!--dynamically added select options-->
-		<option></option>
+		<option>All</option>
 		<?php	
 	$year1query = mysql_query("select year from wine group by year");
 	while($row = mysql_fetch_array($year1query))
@@ -67,7 +67,7 @@ id="wineryname" /></td></tr>
 	 to 
 	 <select name="YearMax" id="YearMax">
 	 <!--dynamically added select options-->
-		<option></option>
+		<option>All</option>
 				<?php	
 	$year2query = mysql_query("select year from wine group by year");
 	while($row = mysql_fetch_array($year2query))
@@ -111,29 +111,16 @@ id="search" />
 	$minDollar = $_GET['minDollar'];
 	$maxDollar = $_GET['maxDollar'];
 	$counter = 0;
-	/* checks
-	print $winename;
-	print $wineryname;
-	print $region;
-	print $grape;
-	print $YearMin;
-	print $YearMax;
-	print $minstock;
-	print $minordered;
-	print $minDollar;
-	print $maxDollar;
-	print $error;
-	*/
+	
 	print "<span id='dieerrors'>";
 
 	//php validation before entering the database
 	//this makes sure that all required fields are filled in.
-/*no fields are required
+
 	if($winename != '' && $wineryname != '' && $region != '' && 
 $grape != '' && $YearMin != '' && $YearMax != '' && $minstock != '' && 
 $minordered != '' && $minDollar != '' && $maxDollar != '')
 	{
-	*/
 
 	print "<table id='errortable'>";
 	print "<td>";
@@ -160,11 +147,31 @@ $minordered != '' && $minDollar != '' && $maxDollar != '')
 
 //this is the (very long) sql command as a variable name
 //still needed to be added to it will be querying each of the variables against it.
-	$query = "select wine_name, variety, year,  winery_name, region_name, cost, on_hand, qty, sum(cost*qty) as Total_Revenue from wine, grape_variety, winery, region, inventory, wine_variety, items where winery.region_id = 
-region.region_id and wine.winery_id = winery.winery_id and wine.wine_id = inventory.wine_id and wine_variety.variety_id = grape_variety.variety_id and wine_variety.wine_id = wine.wine_id and items.wine_id = wine.wine_id group 
-by wine.wine_id and wine_name like '%$winename%' and variety like '%$grape%' and year between '$YearMin' 
-and '$YearMax' and winery_name like '%$wineryname%' and region_name like '%$region%' and cost between 
-'$minDollar' and '$maxDollar' and qty between '$minStock' and '$minordered'";
+	$query = "select wine_name, variety, year,  winery_name, region_name, cost, on_hand, qty, sum(cost*qty) as Total_Revenue from wine, grape_variety, winery, region, inventory, wine_variety, items where winery.region_id = region.region_id and wine.winery_id = winery.winery_id and wine.wine_id = inventory.wine_id and wine_variety.variety_id = grape_variety.variety_id and wine_variety.wine_id = wine.wine_id and items.wine_id = wine.wine_id";
+	
+	if($grape != 'All'){
+	$query.= "and variety like '%$grape%'";
+	}
+	if($winename != ''){
+	$query.= "and wine_name like '%$winename%'";
+	}
+	if($region !='All'){
+	$query.= "and region_name like '%$region%'";
+	}
+	if($YearMin !='All' && $YearMax !='All'){
+	$query.= "and year between '$YearMin'and '$YearMax'";
+	}
+	if($minDollar !='' && $maxDollar !=''){
+	$query.="and cost between'$minDollar' and '$maxDollar'";
+	}
+	if($wineryname !='All'){
+	$query.="and winery_name like '%$wineryname%'";
+	}
+	if($minStock !='' && $minOrdered != ''){
+	$query.="and qty between '$minStock' and '$minordered'";
+	}
+	
+	$query.="group by wine.wine_id order by wine.wine_name";
 
 	print "</span>";
 
@@ -177,40 +184,11 @@ and '$YearMax' and winery_name like '%$wineryname%' and region_name like '%$regi
 database");
 		$result = mysql_query("$query");
 	
-	//display the table
-	//after the query is executed, return an error if 
-	//the counter is still at 0.
-//		if (counter == 0){print "No records match your 
-//search criteria.";}
-//		else{
-			print "<table id='VT' ><th>Wine 
-Name</th><th>Grape</th><th>Year</th><th>Winery</th><th>Region</th><th>Cost</th><th>Total 
-bottles</th><th>Total stock sold</th><th>Total Revenue</th>";
-
-			while($row = mysql_fetch_array($result))
-			{
-			//verify names
-				print "<tr><td>" .$row['wine_name']."</td>
-				<td>".$row['variety']."</td>
-				<td>".$row['year']."</td>
-				<td>".$row['winery_name']."</td>
-				<td>".$row['region_name']."</td>
-				<td>".$row['cost']."</td>
-				<td>".$row['on_hand']."</td>
-				<td>".$row['qty']."</td>
-				<td>".$row['Total_Revenue']."</td>
-				</tr>";
-			//adds one to the counter each time a row is found and written
-			$counter = $counter + 1;
-			}//while
-			print "</table>";
-			print "Total returned: $counter";
 //Nathan Dalby s3236863
-		//}//else
-		if($counter == 0)
-		{print "No records match your search criteria.";}
-		} //error if
-//	}//if statement if there are required statements
+	}//if statement if there are required statements
+	else{
+	die("There is a blank field. Please try again.");
+	}
 	
 	?>
 	
