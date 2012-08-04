@@ -1,14 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" 
-"http://www.w3.org/TR/html4/strict.dtd">
-<html>
-	<head>
-		<title>Winery Database</title>
-		<!--Nathan Dalby s3236863-->
-		<link type="text/css" rel="stylesheet" href="style.css" />
-	</head>
-
-	<body>
-	<div id="wrapper">
+<?php include("header.inc"); ?>
 	<?php
 			$dbc = mysql_connect("yallara.cs.rmit.edu.au:56586", "winestore", "bmRVQy5E") or 
 		die("can't connect to server");
@@ -113,8 +103,4 @@ bottles</th><th>Total stock sold</th><th>Total Revenue</th>";
 	
 	?>
 	
-	</div> <!--wrapper-->
-	</body>
-
-</html>
-
+<?php include("footer.inc"); ?>
