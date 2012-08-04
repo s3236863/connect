@@ -17,7 +17,7 @@
 database");
 	?>
 	<h1>Search wines and wineries</h1>
-	
+<!--display the form-->	
 	<form action="wineryresults.php" method="get" onsubmit="return 
 checkWine()" >
 	<table id="winetable">
@@ -101,6 +101,7 @@ id="search" />
 	<?php
 	//Nathan Dalby s3236863
 	$error = '';
+//get commands
 	$winename = $_GET['winename'];
 	$wineryname = $_GET['wineryname'];
 	$region = $_GET['region'];

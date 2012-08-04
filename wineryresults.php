@@ -11,8 +11,9 @@
 	<div id="wrapper">
 	<?php
 			$dbc = mysql_connect("yallara.cs.rmit.edu.au:56586", "winestore", "bmRVQy5E") or 
-		print("can't connect to server");
-		mysql_select_db("winestore") or print("can't connect to database");
+		die("can't connect to server");
+		mysql_select_db("winestore", $dbc) or die("can't connect to database");
+                echo mysql_errno($dbc) . ":" . mysql_error($dbc). "\n";
 	?>
 	<h1>Results</h1>
 	
@@ -36,8 +37,8 @@
 	//enter the database and query it
 		$dbc = mysql_connect("yallara.cs.rmit.edu.au:56586", "winestore", "bmRVQy5E") or 
 		die("can't connect to server");
-		mysql_select_db("winestore") or die("can't connect to 
-database");
+		mysql_select_db("winestore", $dbc) or die("can't connect to database");
+                echo mysql_errno($dbc) . ":" . mysql_error($dbc) . "\n";
 
 //this is the (very long) sql command as a variable name
 
@@ -73,7 +74,8 @@ $query = "select wine_name, variety,  year, cost, on_hand, region_name, winery_n
 	}
 	
 	$query.="group by wine.wine_id order by wine.wine_name limit 2000";
-	$result = mysql_query("$query");
+	$result = mysql_query("$query", $dbc);
+        echo mysql_errno($dbc) . ":" . mysql_error($dbc) . "\n";
 	
 	//display the table
 	//after the query is executed, return an error if 
